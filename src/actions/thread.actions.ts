@@ -1,5 +1,6 @@
 "use server";
 import { connectToDB } from "@/db";
+import { Community } from "@/db/models/community.model";
 import { Thread } from "@/db/models/thread.model";
 import User from "@/db/models/user.model";
 import { revalidatePath } from "next/cache";
@@ -7,16 +8,19 @@ import { revalidatePath } from "next/cache";
 export const createThread = async ({
   thread,
   author,
+  community,
 }: {
   thread: string;
+  community: string | null;
   author: string;
 }) => {
   try {
     await connectToDB();
-    
+
     const createThread = await Thread.create({
       text: thread,
       author,
+      community,
     });
 
     if (!createThread)
@@ -26,8 +30,15 @@ export const createThread = async ({
       };
 
     await User.findByIdAndUpdate(author, {
-      $push: {threads: createThread._id}
+      $push: { threads: createThread._id },
     });
+
+    if (community) {
+      const getCommunity = await Community.findOne({ id: community });
+
+      getCommunity.threads.push(createThread._id);
+      await getCommunity.save();
+    }
 
     return {
       success: true,
@@ -57,13 +68,12 @@ export async function deleteThread(id: string, path: string) {
       success: true,
       message: "Thread deleted",
     };
-    
   } catch (error) {
     console.log(error);
     return {
       status: 500,
       success: false,
-      
+
       error: error.message,
     };
   }
@@ -88,7 +98,7 @@ export async function replyToThread({
     });
 
     await Thread.findByIdAndUpdate(parentId, {
-      $push: { "sub-threads": replyThread._id },
+      $push: { children: replyThread._id },
     });
 
     revalidatePath(`/thread/${parentId}`, "page");

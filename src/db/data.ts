@@ -1,8 +1,9 @@
 "use server";
 
 import { connectToDB } from "@/db";
-import User from "./models/user.model";
+import { Community } from "./models/community.model";
 import { Thread } from "./models/thread.model";
+import User from "./models/user.model";
 
 // user
 export const fetchUserById = async (userId: string) => {
@@ -97,13 +98,25 @@ export const fetchUserReplies = async (userId: string) => {
   }
 };
 
-
 // thread
 export const fetchThreadById = async (threadId: string) => {
   try {
     await connectToDB();
 
-    const thread = await Thread.findOne({ _id: threadId }).exec();
+    const thread = await Thread.findOne({ _id: threadId })
+      .populate({
+        path: "children",
+        model: Thread,
+      })
+      .populate({
+        path: "community",
+        model: Community,
+      })
+      .populate({
+        path: "author",
+        model: User,
+      })
+      .exec();
 
     if (!thread) {
       throw new Error(`Failed to fetch thread`);
@@ -119,7 +132,29 @@ export const fetchAllThreads = async () => {
     await connectToDB();
 
     // FIXME: indexing and pagination
-    let threads = await Thread.find({}).exec();
+    let threads = await Thread.find({})
+      .populate({
+        path: "children",
+        populate: [
+          {
+            path: "author",
+            model: User,
+          },
+          {
+            path: "community",
+            model: Community,
+          },
+        ],
+      })
+      .populate({
+        path: "community",
+      })
+      .populate({
+        path: "author",
+      })
+      .exec();
+    console.log("🚀 ~ file: data.ts:156 ~ fetchAllThreads ~ threads:", threads)
+
 
     // threads = threads.map((thread) => {
     //   if (thread.parentId) return;
@@ -129,6 +164,8 @@ export const fetchAllThreads = async () => {
     if (!threads) {
       throw new Error(`Failed to fetch threads`);
     }
+
+    
 
     return JSON.stringify(threads);
   } catch (error) {
@@ -140,7 +177,20 @@ export const fetchAllThreadsOfUser = async (userId: string) => {
   try {
     await connectToDB();
 
-    const userThreads = await Thread.find({ author: userId }).exec();
+    const userThreads = await Thread.find({ author: userId })
+      .populate({
+        path: "children",
+        model: Thread,
+      })
+      .populate({
+        path: "community",
+        model: Community,
+      })
+      .populate({
+        path: "author",
+        model: User,
+      })
+      .exec();
 
     if (!userThreads) {
       throw new Error(`Failed to fetch threads`);
@@ -154,16 +204,27 @@ export const fetchAllThreadsOfUser = async (userId: string) => {
 
 export const fetchThreadReplies = async (threadId: string) => {
   try {
+    await connectToDB();
 
-    await connectToDB()
- 
-    const replies = await Thread.find({ parentId: threadId }).exec();
-    
+    const replies = await Thread.find({ parentId: threadId })
+      .populate({
+        path: "children",
+        model: Thread,
+      })
+      .populate({
+        path: "community",
+        model: Community,
+      })
+      .populate({
+        path: "author",
+        model: User,
+      })
+      .exec();
+
     if (!replies) return;
 
     return JSON.stringify(replies);
   } catch (error) {
     console.error(error);
-    
   }
-}
+};

@@ -11,6 +11,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { ThreadValidation } from "@/validation/form.validation";
+import { useOrganization } from "@clerk/nextjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -19,6 +20,7 @@ import { z } from "zod";
 function CreateThread({ authorId }: { authorId: string }) {
   const { toast } = useToast();
   const router = useRouter();
+  const { organization } = useOrganization()
 
   const form = useForm({
     resolver: zodResolver(ThreadValidation),
@@ -33,6 +35,7 @@ function CreateThread({ authorId }: { authorId: string }) {
     const createdThread = await createThread({
       thread: values.thread,
       author: values.author,
+      community: organization ? organization.id : null,
     });
 
     if (createdThread.success === false) {

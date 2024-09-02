@@ -7,6 +7,9 @@ import { Community } from "@/db/models/community.model";
 import { Thread } from "@/db/models/thread.model";
 import { connectToDB } from "@/db";
 
+
+// FIXME: recreate this you have not written this stuff All.
+
 export async function createCommunity(
   id: string,
   name: string,

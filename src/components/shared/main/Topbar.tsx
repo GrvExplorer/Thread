@@ -27,6 +27,7 @@ function Topbar() {
           </SignedIn>
         </div>
 
+{/* organization=community And community is being added to db through webhook */}
         <OrganizationSwitcher
           appearance={{
             baseTheme: dark,

@@ -13,8 +13,6 @@ import { deleteThread } from "@/actions/thread.actions";
 function ThreadCard({ thread }) {
   // FIXME: add delete functionality
   const [user, setUser] = useState();
-console.log(thread);
-
 
   const path = usePathname();
   const session = useUser();

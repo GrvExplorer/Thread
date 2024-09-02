@@ -6,6 +6,7 @@ export default async function Page() {
   if (!threads) return <></>;
   threads = JSON.parse(threads);
 
+
   return (
     <div>
       <h1 className="head-text">Home</h1>
