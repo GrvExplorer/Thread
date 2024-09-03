@@ -3,7 +3,7 @@ import mongoose, { set } from "mongoose";
 let isConnected = false;
 
 export const connectToDB = async () => {
-  set('strictQuery', true)
+  set("strictQuery", true);
   if (!process.env.DATABASE_URL) return console.log("Missing MongoDB URL");
 
   try {

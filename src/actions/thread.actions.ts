@@ -8,19 +8,28 @@ import { revalidatePath } from "next/cache";
 export const createThread = async ({
   thread,
   author,
-  community,
+  communityId,
 }: {
   thread: string;
-  community: string | null;
+  communityId: string | null;
   author: string;
 }) => {
   try {
     await connectToDB();
 
+    const communityObjectId = await Community.findOne(
+      {
+        id: communityId,
+      },
+      {
+        _id: 1,
+      }
+    );
+
     const createThread = await Thread.create({
       text: thread,
       author,
-      community,
+      community: communityObjectId,
     });
 
     if (!createThread)
@@ -33,9 +42,8 @@ export const createThread = async ({
       $push: { threads: createThread._id },
     });
 
-    if (community) {
-      const getCommunity = await Community.findOne({ id: community });
-
+    if (communityObjectId) {
+      const getCommunity = await Community.findOne(communityObjectId);
       getCommunity.threads.push(createThread._id);
       await getCommunity.save();
     }
@@ -44,7 +52,7 @@ export const createThread = async ({
       success: true,
       message: "Thread created successfully",
     };
-  } catch (error) {
+  } catch (error:any) {
     console.log(error);
     return {
       success: false,
@@ -68,12 +76,11 @@ export async function deleteThread(id: string, path: string) {
       success: true,
       message: "Thread deleted",
     };
-  } catch (error) {
+  } catch (error: any) {
     console.log(error);
     return {
       status: 500,
       success: false,
-
       error: error.message,
     };
   }
@@ -83,23 +90,32 @@ export async function replyToThread({
   authorId,
   text,
   parentId,
+  communityId,
 }: {
   authorId: string;
   text: string;
   parentId: string;
+  communityId: string | null;
 }) {
   try {
     await connectToDB();
+
+    const communityObjectId = await Community.findOne({id: communityId}, {
+      _id: 1
+    })
 
     const replyThread = await Thread.create({
       author: authorId,
       text,
       parentId,
+      community: communityObjectId
     });
 
     await Thread.findByIdAndUpdate(parentId, {
       $push: { children: replyThread._id },
     });
+
+    // TODO: May add replied thread to user document
 
     revalidatePath(`/thread/${parentId}`, "page");
 
@@ -108,7 +124,7 @@ export async function replyToThread({
       status: 200,
       reply: JSON.stringify(replyThread),
     };
-  } catch (error) {
+  } catch (error:any) {
     console.error(error);
     return {
       success: false,

@@ -6,11 +6,8 @@ export default async function Page() {
   const user = await currentUser();
   if (!user) return null; // to avoid typescript warnings
 
-  let userInfo = await fetchUserById(user.id);
-
+  const userInfo = await fetchUserById(user.id);
   if (!userInfo) return <></>;
-
-  userInfo = JSON.parse(userInfo);
 
   const userData = {
     id: user.id,

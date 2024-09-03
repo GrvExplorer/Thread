@@ -3,7 +3,6 @@ import { IUser } from "@/db/models/user.model";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 import { DropdownMenuSeparator } from "../ui/dropdown-menu";
 import ProfilePhoto from "../ui/profile-photo";

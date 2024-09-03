@@ -10,7 +10,7 @@ export default async function Page() {
 
   return (
     <div>
-      <h1 className='head-text'>Create Thread</h1>
+      <h1 className='head-text'>Create Threadss</h1>
       <CreateThread authorId={userDB._id}  />
       </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 import { replyToThread } from "@/actions/thread.actions";
+import { useOrganization } from "@clerk/nextjs";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { DropdownMenuSeparator } from "../ui/dropdown-menu";
@@ -18,18 +19,20 @@ function RepliesToThread({
 }) {
   const [reply, setReply] = useState("");
   const { toast } = useToast();
+  const { organization } = useOrganization()
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const replyRes = await replyToThread({ authorId, text: reply, parentId });
+
+    parentId = JSON.parse(parentId);
+
+    const replyRes = await replyToThread({ authorId, text: reply, parentId, communityId: organization ? organization.id : null });
 
     if (replyRes.success) {
       toast({ title: "Reply added", description: "Your reply has been added" });
       setReply("");
       return;
     }
-
-    console.log(replyRes);
 
     toast({
       title: "Error",
@@ -41,7 +44,10 @@ function RepliesToThread({
   return (
     <div className="space-y-4">
       <DropdownMenuSeparator className="bg-dark-4" />
-      <form onSubmit={onSubmit} className="flex flex-col md:flex-row gap-4 w-full">
+      <form
+        onSubmit={onSubmit}
+        className="flex flex-col md:flex-row gap-4 w-full"
+      >
         <div className="text-light-1 flex gap-4 w-full">
           <ProfilePhoto userImage={userImage} className="w-10 h-10" />
           <Input

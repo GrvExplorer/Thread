@@ -1,6 +1,6 @@
 "use client";
 
-import { onBoardUser, updateUser } from "@/actions/user.actions";
+import { updateUser } from "@/actions/user.actions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -24,13 +24,19 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Textarea } from "../ui/textarea";
 import { useToast } from "../ui/use-toast";
 
-function AccountProfileEdit({ user, btnTitle }: { user: any; btnTitle: string }) {
+function AccountProfileEdit({
+  user,
+  btnTitle,
+}: {
+  user: any;
+  btnTitle: string;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const [files, setFiles] = useState<File[]>([]);
   const { startUpload } = useUploadThing("imageUploader");
-  const { toast } = useToast()
- 
+  const { toast } = useToast();
+
   const form = useForm({
     resolver: zodResolver(OnBoardingValidation),
     defaultValues: {
@@ -90,15 +96,15 @@ function AccountProfileEdit({ user, btnTitle }: { user: any; btnTitle: string })
 
     if (newUser?.status === 409) {
       toast({
-        title: 'User not created'
-      })
+        title: "User not created",
+      });
       form.setError("username", { message: "Username already taken" });
       return;
     }
 
     toast({
-      title: 'User created'
-    })
+      title: "User created",
+    });
 
     // router.push("/feed");
   }

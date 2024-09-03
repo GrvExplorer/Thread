@@ -35,7 +35,7 @@ function CreateThread({ authorId }: { authorId: string }) {
     const createdThread = await createThread({
       thread: values.thread,
       author: values.author,
-      community: organization ? organization.id : null,
+      communityId: organization ? organization.id : null,
     });
 
     if (createdThread.success === false) {

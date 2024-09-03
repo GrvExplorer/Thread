@@ -2,7 +2,7 @@ import UserProfileCard from "@/components/custom ui/user-profile-card";
 import { fetchUsers } from "@/db/data";
 
 async function RightSidebar() {
-  let similarMinds = await fetchUsers({
+  const similarMinds = await fetchUsers({
     count: 4,
   });
 
@@ -13,8 +13,6 @@ async function RightSidebar() {
       </div>
     );
   }
-
-  similarMinds = JSON.parse(similarMinds);
 
   return (
     <section className="custom-scrollbar rightsidebar">
@@ -34,8 +32,10 @@ async function RightSidebar() {
         <div className="mt-7 flex w-[350px] flex-col gap-10">
           {/* @ts-ignore */}
 
-          {similarMinds?.length > 0 && similarMinds ? (
-            similarMinds.map((mind) => <UserProfileCard key={mind.id} user={mind} />)   
+          {similarMinds.length > 0 && similarMinds ? (
+            similarMinds.map((mind) => (
+              <UserProfileCard key={mind.id} user={mind} />
+            ))
           ) : (
             <p className="!text-base-regular text-light-3">No users yet</p>
           )}

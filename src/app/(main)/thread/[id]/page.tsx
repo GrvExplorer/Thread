@@ -6,30 +6,38 @@ import { currentUser } from "@clerk/nextjs/server";
 
 async function page({ params }: { params: { id: string } }) {
   if (!params.id) return;
-
-  let thread = await fetchThreadById(params.id);
-  if (!thread) return <></>;
-  thread = JSON.parse(thread);
-
-  let replies = await fetchThreadReplies(params.id);
-  if (replies) replies = JSON.parse(replies);
-
   const user = await currentUser();
   if (!user) return null;
+
+  const thread = await fetchThreadById(params.id);
+
+  // let replies = await fetchThreadReplies(params.id);
+  // if (replies) replies = JSON.parse(replies);
+
   const userInfo = await fetchUserById(user.id);
 
   return (
     <div className="space-y-10">
-      <ThreadCard thread={thread} />
+      <ThreadCard
+        id={thread._id}
+        author={thread.author}
+        comments={thread.children}
+        isComment={thread.children.length > 0}
+        createdAt={thread.createdAt}
+        community={thread.community}
+        content={thread.text}
+        parentId={thread.parentId}
+        currentUserId={user?.id}
+      />
 
       {/* @ts-ignore */}
       <RepliesToThread
         userImage={userInfo.image}
         authorId={userInfo._id}
-        parentId={thread._id}
+        parentId={JSON.stringify(thread._id)}
       />
 
-      <ShowReplies replies={replies} />
+      <ShowReplies replies={thread.children} />
     </div>
   );
 }

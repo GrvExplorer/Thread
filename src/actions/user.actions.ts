@@ -1,5 +1,4 @@
 "use server";
-
 import { connectToDB } from "@/db";
 import User from "@/db/models/user.model";
 import mongoose from "mongoose";
@@ -33,6 +32,7 @@ export const updateUser = async (user: any) => {
       },
       {
         upsert: true,
+        timestamps: true,
       }
     );
 

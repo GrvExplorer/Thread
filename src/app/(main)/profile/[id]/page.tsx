@@ -9,9 +9,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const user = await fetchUserById(userId);
 
-  let thread = await fetchAllThreadsOfUser(user?._id);
-  if (!thread) return <></>;
-  thread = JSON.parse(thread);
+  const userThreads = await fetchAllThreadsOfUser(user?._id);
 
   return (
     <div className="space-y-8">
@@ -20,8 +18,21 @@ export default async function Page({ params }: { params: { id: string } }) {
 
       <UserProfileSections />
       {/* @ts-ignore */}
-      {thread.map((thread, i) => {
-        return <ThreadCard key={i} thread={thread} />;
+      {userThreads.map((userThread, i) => {
+        return (
+          <ThreadCard
+            key={i}
+            id={userThread._id}
+            author={userThread.author}
+            comments={userThread.children}
+            isComment={userThread.children.length > 0}
+            createdAt={userThread.createdAt}
+            community={userThread.community}
+            content={userThread.text}
+            parentId={userThread.parentId}
+            currentUserId={userId}
+          />
+        );
       })}
     </div>
   );

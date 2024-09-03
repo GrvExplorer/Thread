@@ -30,6 +30,10 @@ export const ThreadSchema = new mongoose.Schema(
   }
 );
 
+ThreadSchema.post('find', function () {
+  
+})
+
 export type ThreadDocument = mongoose.InferSchemaType<typeof ThreadSchema>;
 
 export const Thread =
