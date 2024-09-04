@@ -1,17 +1,13 @@
-# Welcome! To 👋 10 Next JS Projects
+# Welcome! To 👋 Thread
     
-  <p align="left"> <a href="" target="_blank" rel="noreferrer"> <img src="" alt="banner" /></a> </p>
-
-# My Social medial
+  <p align="left"> <a href="https://threadme.vercel.com" target="_blank" rel="noreferrer"> <img src="./public/banner.png" alt="banner" /></a> </p>
 
 # Technologies used 
- <p style="display: flex; gap: 10px;">
-
   - uploadthing
   - nextjs
-  - 
+  - mongodb
+  - mongoose
 
- </p>
 
 # My Learning 
  
@@ -40,6 +36,4 @@
 **Have fun  Coding 🚀**
 
 # License
-
 [MIT](https://choosealicense.com/licenses/mit/)
-

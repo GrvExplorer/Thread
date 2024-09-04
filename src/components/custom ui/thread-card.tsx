@@ -17,7 +17,6 @@ interface ThreadCardProps {
     id: string;
   };
   community: {
-    _id: string;
     id: string;
     name: string;
     image: string;
@@ -170,7 +169,7 @@ function ThreadCard({
             ""
           )}
           {!!community && (
-            <Link href={`/communities/${community._id}`}>            
+            <Link href={`/communities/${community.id}`}>            
             <div className="flex gap-2 items-center">
               <p className="text-light-3 text-small-regular">{community.name}</p>
               <div className="relative overflow-hidden rounded-full w-6 h-6">

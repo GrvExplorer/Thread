@@ -2,13 +2,13 @@ import Image from "next/image";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
 import { cn } from "@/utils/utils";
 
-function ProfilePhoto({userImage,
+function ProfilePhoto({image,
   className
-}: {userImage: string | undefined, className?: string}) {
+}: {image: string | undefined, className?: string}) {
   return (
     <div>
       <Avatar className={cn("w-20 h-20", className)}>
-        <AvatarImage src={userImage} />
+        <AvatarImage src={image} />
         <AvatarFallback>
           <Image
             src="/assets/profile.svg"

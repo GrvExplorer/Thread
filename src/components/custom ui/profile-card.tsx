@@ -1,10 +1,22 @@
-import { IUser } from "@/db/models/user.model";
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Button } from "../ui/button";
 
-function UserProfileCard({ user }: { user: IUser | undefined }) {
+function ProfileCard({
+  user,
+  type,
+}: {
+  user:
+    | {
+        id: string;
+        username: string;
+        name: string;
+        image: string;
+      }
+    | undefined;
+  type: "user" | "community";
+}) {
   return (
     <div className="flex justify-between items-center w-full">
       <div className="flex items-center gap-4">
@@ -27,11 +39,11 @@ function UserProfileCard({ user }: { user: IUser | undefined }) {
         </div>
       </div>
 
-      <Link href={`/profile/${user?.id}`}>
+      <Link href={`/${type == "user" ? "profile" : "communities"}/${user?.id}`}>
         <Button className="user-card_btn">View</Button>
       </Link>
     </div>
   );
 }
 
-export default UserProfileCard;
+export default ProfileCard;

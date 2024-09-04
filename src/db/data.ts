@@ -5,7 +5,7 @@ import { Community } from "./models/community.model";
 import { Thread } from "./models/thread.model";
 import User from "./models/user.model";
 
-// user
+// !!! user
 export const fetchUserById = async (userId: string) => {
   try {
     await connectToDB();
@@ -98,7 +98,37 @@ export const fetchUserReplies = async (userId: string) => {
   }
 };
 
-// thread
+export const fetchUserPosts = async (id: string) => {
+  try {
+    const res = await User.findById(id).populate({
+      path: "threads",
+      model: Thread,
+      select: 'createdAt _id parentId text',
+      populate: [
+        {
+          path: "children",
+          model: Thread,
+          populate: {
+            path: "author",
+            model: User,
+            select: "id name image",
+          },
+        },
+        {
+          path: 'community',
+          model: Community,
+          select: '_id id name image'
+        }
+      ],
+    });
+
+    return res;
+  } catch (error) {
+    console.log("🚀 ~ file: data.ts:231 ~ fetchUserPosts ~ error:", error);
+  }
+};
+
+// !!! thread
 export const fetchThreadById = async (threadId: string) => {
   try {
     await connectToDB();
@@ -124,9 +154,9 @@ export const fetchThreadById = async (threadId: string) => {
             },
           },
           {
-            path: 'community',
+            path: "community",
             model: Community,
-            select: 'id name image',
+            select: "id name image",
           },
         ],
       })
@@ -192,25 +222,25 @@ export const fetchAllThreadsOfUser = async (userId: string) => {
   try {
     await connectToDB();
 
-    const userThreads = await Thread.find({ author: userId , parentId: null })
+    const userThreads = await Thread.find({ author: userId, parentId: null })
       .populate({
         path: "children",
         model: Thread,
         populate: {
-          path: 'author',
+          path: "author",
           model: User,
-          select: 'id image name',
-        }
+          select: "id image name",
+        },
       })
       .populate({
         path: "community",
         model: Community,
-        select: 'id image name'
+        select: "id image name",
       })
       .populate({
         path: "author",
         model: User,
-        select: 'id image name'
+        select: "id image name",
       })
       .exec();
 
@@ -248,5 +278,24 @@ export const fetchThreadReplies = async (threadId: string) => {
     return JSON.stringify(replies);
   } catch (error) {
     console.error(error);
+  }
+};
+
+
+// !!! Communities
+export const fetchCommunities = async ({ count }: { count: number }) => {
+  try {
+    await connectToDB();
+
+    // FIXME: indexing
+    const communities = await Community.find().limit(count).exec();
+
+    if (!communities) {
+      throw new Error(`Failed to fetch users`);
+    }
+
+    return communities;
+  } catch (error) {
+    console.log(error);
   }
 };
