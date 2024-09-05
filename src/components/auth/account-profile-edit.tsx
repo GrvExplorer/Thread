@@ -102,11 +102,11 @@ function AccountProfileEdit({
       return;
     }
 
-    toast({
-      title: "User created",
-    });
+    if (pathname.includes("/edit")) {
+      router.back();
+    }
 
-    // router.push("/feed");
+    router.push("/feed");
   }
 
   return (

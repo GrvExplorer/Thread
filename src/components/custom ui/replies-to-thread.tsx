@@ -49,7 +49,7 @@ function RepliesToThread({
         className="flex flex-col md:flex-row gap-4 w-full"
       >
         <div className="text-light-1 flex gap-4 w-full">
-          <ProfilePhoto userImage={userImage} className="w-10 h-10" />
+          <ProfilePhoto image={userImage} className="w-10 h-10" />
           <Input
             type="text"
             className=""

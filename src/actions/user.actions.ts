@@ -2,6 +2,7 @@
 import { connectToDB } from "@/db";
 import User from "@/db/models/user.model";
 import mongoose from "mongoose";
+import { revalidatePath } from "next/cache";
 
 // user
 export const updateUser = async (user: any) => {
@@ -36,10 +37,14 @@ export const updateUser = async (user: any) => {
       }
     );
 
+    if (user.path.includes("/edit")) {
+      revalidatePath(`/profile/${user.userId}`, "page");
+    }
+
     return {
       status: 200,
       success: true,
-      user: JSON.stringify(updateUser),
+      user: updateUser,
     };
   } catch (error) {
     // console.error(error);

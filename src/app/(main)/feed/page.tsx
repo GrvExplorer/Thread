@@ -1,11 +1,11 @@
 import ThreadCard from "@/components/custom ui/thread-card";
-import { fetchAllThreads } from "@/db/data";
+import { fetchThreads } from "@/db/data";
 import { currentUser } from "@clerk/nextjs/server";
 
 export default async function Page() {
   const user = await currentUser();
 
-  const threads = await fetchAllThreads();
+  const threads = await fetchThreads();
   if (!threads) return;
 
   return (

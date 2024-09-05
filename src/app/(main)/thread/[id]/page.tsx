@@ -1,7 +1,7 @@
 import ShowReplies from "@/components/custom ui/replies";
 import RepliesToThread from "@/components/custom ui/replies-to-thread";
 import ThreadCard from "@/components/custom ui/thread-card";
-import { fetchThreadById, fetchThreadReplies, fetchUserById } from "@/db/data";
+import { fetchThreadById, fetchUserById } from "@/db/data";
 import { currentUser } from "@clerk/nextjs/server";
 
 async function page({ params }: { params: { id: string } }) {
@@ -10,10 +10,6 @@ async function page({ params }: { params: { id: string } }) {
   if (!user) return null;
 
   const thread = await fetchThreadById(params.id);
-
-  // let replies = await fetchThreadReplies(params.id);
-  // if (replies) replies = JSON.parse(replies);
-
   const userInfo = await fetchUserById(user.id);
 
   return (
