@@ -1,7 +1,7 @@
 "use server";
 
 import { connectToDB } from "@/db";
-import { SortOrder } from "mongoose";
+import { FilterQuery, SortOrder } from "mongoose";
 import { Community } from "./models/community.model";
 import { Thread } from "./models/thread.model";
 import User from "./models/user.model";
@@ -199,7 +199,31 @@ export const fetchSearchThreads = async ({
 
     await connectToDB()
 
-    
+    const regex = new RegExp(searchString, "i");
+
+    const query: FilterQuery<typeof Thread> = {} 
+    if (searchString.trim() !== ""){
+      query.$or = [
+        {text: { $regex: regex}}
+      ]
+    }else{
+      return; 
+    }
+
+    const threadQuery = Thread.find(query)
+    .populate("author", "name id image")
+    .populate({
+      path: "children",
+      model: Thread,
+      populate: {
+        path: "author",
+        model: User,
+        select: "id name image",
+      },
+    })
+    .populate("community", "id name image")
+
+    return threadQuery;
   } catch (error) {
     console.log("🚀 ~ file: data.ts:201 ~ error:", error)
   }
