@@ -53,7 +53,7 @@ function CreateThread({ authorId }: { authorId: string }) {
     });
     form.reset({});
 
-    // router.push('/feed')
+    router.push('/feed')
   };
 
   return (

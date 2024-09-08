@@ -48,6 +48,7 @@ export const createThread = async ({
       await getCommunity.save();
     }
 
+    revalidatePath('/feed', 'page')
     return {
       success: true,
       message: "Thread created successfully",

@@ -53,8 +53,6 @@ export default function Navbar() {
 
           <SignedIn>
             <UserButton
-              userProfileUrl="/user-profile"
-              userProfileMode="navigation"
               appearance={UserButtonAppearance}
             />
           </SignedIn>

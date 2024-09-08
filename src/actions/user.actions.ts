@@ -1,5 +1,6 @@
 "use server";
 import { connectToDB } from "@/db";
+import { Thread } from "@/db/models/thread.model";
 import User from "@/db/models/user.model";
 import mongoose from "mongoose";
 import { revalidatePath } from "next/cache";
@@ -71,3 +72,31 @@ export const updateUser = async (user: any) => {
     throw error;
   }
 };
+
+export const getActivity = async (userId:string) => {
+  try {
+    
+    const userThreads = await Thread.find({author: userId})
+
+    const userThreadsRepliesIds = userThreads.reduce((prev, current) => {
+      return prev.concat(current.children)
+    }, []) 
+
+    
+    const actualRepliesToThread = await Thread.find({
+      _id: {$in: userThreadsRepliesIds},
+      author: {$ne: userId},
+    }).populate({
+      path: 'author',
+      model: User,
+      select: 'image name'
+    })
+
+
+    return actualRepliesToThread;
+  } catch (error) {
+    console.log("🚀 ~ file: user.actions.ts:79 ~ getActivity ~ error:", error)
+
+    
+  }
+}
